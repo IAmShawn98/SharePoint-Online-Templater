@@ -18,7 +18,7 @@ else {
 }
 
 # Connect to the GTM tenant site URL.
-Connect-SPOService -Url https://gtmdemo1-admin.sharepoint.com/
+Connect-SPOService -Url https://gtmgrp-admin.sharepoint.com/
 
 # Allow full access to site/script execution.
 Set-ExecutionPolicy Unrestricted
