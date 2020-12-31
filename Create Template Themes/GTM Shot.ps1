@@ -5,7 +5,7 @@ $host.ui.RawUI.WindowTitle = "GTM: Shot! (SharePoint Online Templater)"
 $wsh = New-Object -ComObject Wscript.Shell
 
 # Let the user know the server is awaiting auth login data.
-Write-Host "Waiting For Authentication...."
+Write-Host "Please login using your SharePoint username and password so we can identify your account."
 
 # Authenticate User If Admin Account Info Passes Credit Check....
 if ($host.ui.PromptForCredential("Sign In", "Please sign in using a Microsoft account with valid admin tenant access to continue. If you do not have access to a valid admin account, please contact your network administrator for assistance.", '', "SYSTEM\Administrator")) {}
@@ -17,8 +17,15 @@ else {
     exit 
 }
 
-# Connect to the GTM tenant site URL.
-Connect-SPOService -Url https://gtmgrp-admin.sharepoint.com/
+# Clear Auth Check Text.
+Clear-Host
+
+# Prompt User to Paste Their SharePoint Admin Tenant Domains.
+Write-Host "Please paste your SharePoint admin tenant URL here to continue. (Example: https://gtmdemo1-admin.sharepoint.com/)"
+$SPDomain = Read-Host " ";
+
+# Connect to SharePoint Admin Tenant Domain.
+Connect-SPOService -Url $SPDomain
 
 # Allow full access to site/script execution.
 Set-ExecutionPolicy Unrestricted
@@ -67,14 +74,14 @@ function StartMenu {
            "
     Write-Host "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
     Write-Host "
-
-
+                                                 [D] Download Latest Patch
 
                                                                                                                     "
     Write-Host "                                             © 2020 Global Tax Management, Inc.
 
-                                           Create Dynamic GTM Themed SharePoint Templates
-                                                                               
+                                        Create Dynamic GTM Themed SharePoint Templates    
+                                        
+                                                  A Thing By Shawn Luther                                                                                                                      
 "
 }
 do {
@@ -98,9 +105,14 @@ do {
             # Collect SPOSite Design Definitions.
             $designTitle = Read-Host "Template Name"
 
-            # Collect SPOSite Design Template Type.
-            $designWebTemplate = Read-Host "Template Type (Enter '68' For Default)"
+            # Give user design options to pick from.
+            write-Host "Which type of site do you want to provision? Please type the number next to the desired site design to continue.
 
+[68] Communications Site | [64] Teams Site"
+           
+            #Collect SPOSite Design Template Type.
+            $designWebTemplate = Read-Host " "
+            
             # Collect SPOSite Design Description.
             $designDescription = Read-Host "Site Description"
 
@@ -110,15 +122,13 @@ do {
         }
         '2' {
             # Collect SPO Site ID For Deletion.
-            Write-Host "Enter the site ID of the SP template you wish to delete."
+            Write-Host "Enter the site ID of the SharePoint template you wish to delete."
             $SiteID = Read-Host " "
 
             # Perform Delete Site Action.
             Remove-SPOSiteDesign $SiteID
 
             $siteScriptId.id
-
-            # Pause to Show Delete Success.
             pause
 
             # Clear Section UI.
@@ -130,13 +140,27 @@ do {
         '3' {
             # Show All Active SPO Sites.
             Get-SPOSiteDesign
-            
-            # Allow Users to Stop and Copy Their ID Before Continiing.
             pause
 
             # Clear ID Table.
             Clear-Host
 
+            # Go Home.
+            StartMenu
+        }
+        'd' {
+            # Let User Know the Latest Patch is Being Downloaded.
+            Write-Host "Downloading Latest Patch From Github...."
+            Start-Sleep -Seconds 8
+            
+            # Begin Download.
+            Start-Process "https://github.com/IAmShawn98/SharePoint-Themer-Tools/archive/main.zip"
+            Clear-Host
+            
+            # Let User Know the Download Is Complete.
+            Write-Host "The latest patch has completed downloading, check your downloads for the latest patch zip."
+            pause
+            
             # Go Home.
             StartMenu
         }
