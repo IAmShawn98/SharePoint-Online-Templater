@@ -74,7 +74,7 @@ function StartMenu {
            "
     Write-Host "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
     Write-Host "
-                                                 [D] Download Latest Patch
+                                  [D] Download Latest Patch | [I] Install SharePoint Online
 
                                                                                                                     "
     Write-Host "                                             © 2020 Global Tax Management, Inc.
@@ -101,6 +101,51 @@ do {
 
             # Push Site Script Into SPOSite With Unique ID.
             $siteScriptId = (Get-Content $scriptFile -Raw | Add-SPOSiteScript -Title $scriptTitle) | Select-Object -First 1 Id
+
+            # Push the 'primary' default color into the color palette array object.
+            write-Host "Please provide a 'primary' default color to your site (You may use explicit colors or hex values)."
+            $themePrimary = Read-Host " "
+
+            # Push the 'text' default color default the color palette array object.
+            write-Host "Please provide a 'text' default color to your site (You may use explicit colors or hex values)."
+            $neutralPrimary = Read-Host " "
+
+            # Push the 'background' default color into the color palette array object.
+            write-Host "Please provide a 'background' default color to your site (You may use explicit colors or hex values)."
+            $primaryBackground = Read-Host " "
+
+            $themepalette = @{
+                "themePrimary" = "$themePrimary";
+                "themeLighterAlt" = "#eff6fc";
+                "themeLighter" = "#deecf9";
+                "themeLight" = "#c7e0f4";
+                "themeTertiary" = "#71afe5";
+                "themeSecondary" = "#2b88d8";
+                "themeDarkAlt" = "#106ebe";
+                "themeDark" = "#005a9e";
+                "themeDarker" = "#004578";
+                "neutralLighterAlt" = "#f8f8f8";
+                "neutralLighter" = "#f4f4f4";
+                "neutralLight" = "#eaeaea";
+                "neutralQuaternaryAlt" = "#dadada";
+                "neutralQuaternary" = "#d0d0d0";
+                "neutralTertiaryAlt" = "#c8c8c8";
+                "neutralTertiary" = "#c2c2c2";
+                "neutralSecondary" = "#858585";
+                "neutralPrimaryAlt" = "#4b4b4b";
+                "neutralPrimary" = "$neutralPrimary";
+                "neutralDark" = "#272727";
+                "black" = "#1d1d1d";
+                "white" = " $primaryBackground";
+                "primaryBackground" = " $primaryBackground";
+                "primaryText" = "#333333";
+                "bodyBackground" = " $primaryBackground";
+                "bodyText" = "#333333";
+                "disabledBackground" = "#f4f4f4";
+                "disabledText" = "#c8c8c8";
+                }
+
+                Add-SPOTheme -Identity "GTM Theme" -Palette $themepalette -IsInverted $false -Overwrite
 
             # Collect SPOSite Design Definitions.
             $designTitle = Read-Host "Template Name"
@@ -159,6 +204,14 @@ do {
             
             # Let User Know the Download Is Complete.
             Write-Host "The latest patch has completed downloading, check your downloads for the latest patch zip."
+            pause
+            
+            # Go Home.
+            StartMenu
+        }
+        'i' {
+            # Install SharePoint Online Management Shell.
+            Install-Module -Name Microsoft.Online.SharePoint.PowerShell
             pause
             
             # Go Home.
