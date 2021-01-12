@@ -85,86 +85,107 @@ function StartMenu {
 "
 }
 do {
-    # Menu Select Functionality.
-    # Renders the 'StartMenu' When the Program Runs.
+    # Renders Main Selection Menu.
     StartMenu
 
-    # When A User Enters '1', Send Them to the SharePoint Authenticator.
+    # Collect menu data from users.
     $MenuSelect = Read-Host " ";
 
-    # Switch Function; If the User Types '1' Send Them to the SP Auth Func.
+    # Switch Function; If the user selects option '1', let them choose to either create a template or set new theme default.
     switch ($MenuSelect) {
         '1' {
-            # Site Script definitions.
-            $scriptFile = $PSScriptRoot + "\customScript.json"
-            $scriptTitle = "customScript"
+            # Data Collection For Picking Between Site Provisioning and Theme Defaulting.
+            Write-Host "[1] Create New Site | [2] Change Default Theme"
+            $MenuSelect = Read-Host " ";
 
-            # Push Site Script Into SPOSite With Unique ID.
-            $siteScriptId = (Get-Content $scriptFile -Raw | Add-SPOSiteScript -Title $scriptTitle) | Select-Object -First 1 Id
+            # Switch Function; Allows user to pick between changing theme defaults or provisioning a brand new site.
+            Switch ($MenuSelect) {
+                # Switch '1'; 'Create New Site'.
+                '1' {
+                # Site Script definitions.
+                $scriptFile = $PSScriptRoot + "\customScript.json"
+                $scriptTitle = "customScript"
 
-            # Push the 'primary' default color into the color palette array object.
-            write-Host "Please provide a 'primary' default color to your site (You may use explicit colors or hex values)."
-            $themePrimary = Read-Host " "
+                # Push Site Script Into SPOSite With Unique ID.
+                $siteScriptId = (Get-Content $scriptFile -Raw | Add-SPOSiteScript -Title $scriptTitle) | Select-Object -First 1 Id
 
-            # Push the 'text' default color default the color palette array object.
-            write-Host "Please provide a 'text' default color to your site (You may use explicit colors or hex values)."
-            $neutralPrimary = Read-Host " "
+                # Collect SPOSite Design Definitions.
+                $designTitle = Read-Host "Template Name"
 
-            # Push the 'background' default color into the color palette array object.
-            write-Host "Please provide a 'background' default color to your site (You may use explicit colors or hex values)."
-            $primaryBackground = Read-Host " "
+                # Give user design options to pick from.
+                write-Host "Which type of site do you want to provision? Please type the number next to the desired site design to continue.
 
-            $themepalette = @{
-                "themePrimary" = "$themePrimary";
-                "themeLighterAlt" = "#eff6fc";
-                "themeLighter" = "#deecf9";
-                "themeLight" = "#c7e0f4";
-                "themeTertiary" = "#71afe5";
-                "themeSecondary" = "#2b88d8";
-                "themeDarkAlt" = "#106ebe";
-                "themeDark" = "#005a9e";
-                "themeDarker" = "#004578";
-                "neutralLighterAlt" = "#f8f8f8";
-                "neutralLighter" = "#f4f4f4";
-                "neutralLight" = "#eaeaea";
-                "neutralQuaternaryAlt" = "#dadada";
-                "neutralQuaternary" = "#d0d0d0";
-                "neutralTertiaryAlt" = "#c8c8c8";
-                "neutralTertiary" = "#c2c2c2";
-                "neutralSecondary" = "#858585";
-                "neutralPrimaryAlt" = "#4b4b4b";
-                "neutralPrimary" = "$neutralPrimary";
-                "neutralDark" = "#272727";
-                "black" = "#1d1d1d";
-                "white" = " $primaryBackground";
-                "primaryBackground" = " $primaryBackground";
-                "primaryText" = "#333333";
-                "bodyBackground" = " $primaryBackground";
-                "bodyText" = "#333333";
-                "disabledBackground" = "#f4f4f4";
-                "disabledText" = "#c8c8c8";
+                [68] Communications Site | [64] Teams Site"
+
+                #Collect SPOSite Design Template Type.
+                $designWebTemplate = Read-Host " "
+
+                # Collect SPOSite Design Description.
+                $designDescription = Read-Host "Site Description"
+                Write-Host "-----------------------------------------------------------"
+
+                # Push Design Into SPOSite.
+                Add-SPOSiteDesign -Title $designTitle -WebTemplate $designWebTemplate -SiteScripts  $siteScriptId.id -Description $designDescription
+                pause
+                # Go Home.
+                StartMenu
                 }
 
-                Add-SPOTheme -Identity "GTM Theme" -Palette $themepalette -IsInverted $false -Overwrite
+                # Switch '2'; 'Change Default Theme'.
+                '2' {
+                # Push the 'primary' default color into the color palette array object.
+                write-Host "Please provide a 'primary' default color to your site (You may use explicit colors or hex values)."
+                $themePrimary = Read-Host " "
 
-            # Collect SPOSite Design Definitions.
-            $designTitle = Read-Host "Template Name"
+                # Push the 'text' default color default the color palette array object.
+                write-Host "Please provide a 'text' default color to your site (You may use explicit colors or hex values)."
+                $neutralPrimary = Read-Host " "
 
-            # Give user design options to pick from.
-            write-Host "Which type of site do you want to provision? Please type the number next to the desired site design to continue.
+                # Push the 'background' default color into the color palette array object.
+                write-Host "Please provide a 'background' default color to your site (You may use explicit colors or hex values)."
+                $primaryBackground = Read-Host " "
 
-[68] Communications Site | [64] Teams Site"
-           
-            #Collect SPOSite Design Template Type.
-            $designWebTemplate = Read-Host " "
-            
-            # Collect SPOSite Design Description.
-            $designDescription = Read-Host "Site Description"
+                # Theme Palette Object For Theme Customization.
+                $themepalette = @{
+                    "themePrimary" = "$themePrimary";
+                    "themeLighterAlt" = "#eff6fc";
+                    "themeLighter" = "#deecf9";
+                    "themeLight" = "#c7e0f4";
+                    "themeTertiary" = "#71afe5";
+                    "themeSecondary" = "#2b88d8";
+                    "themeDarkAlt" = "#106ebe";
+                    "themeDark" = "#005a9e";
+                    "themeDarker" = "#004578";
+                    "neutralLighterAlt" = "#f8f8f8";
+                    "neutralLighter" = "#f4f4f4";
+                    "neutralLight" = "#eaeaea";
+                    "neutralQuaternaryAlt" = "#dadada";
+                    "neutralQuaternary" = "#d0d0d0";
+                    "neutralTertiaryAlt" = "#c8c8c8";
+                    "neutralTertiary" = "#c2c2c2";
+                    "neutralSecondary" = "#858585";
+                    "neutralPrimaryAlt" = "#4b4b4b";
+                    "neutralPrimary" = "$neutralPrimary";
+                    "neutralDark" = "#272727";
+                    "black" = "#1d1d1d";
+                    "white" = " $primaryBackground";
+                    "primaryBackground" = " $primaryBackground";
+                    "primaryText" = "#333333";
+                    "bodyBackground" = " $primaryBackground";
+                    "bodyText" = "#333333";
+                    "disabledBackground" = "#f4f4f4";
+                    "disabledText" = "#c8c8c8";
+                    }
 
-            # Push Design Into SPOSite.
-            Add-SPOSiteDesign -Title $designTitle -WebTemplate $designWebTemplate -SiteScripts  $siteScriptId.id -Description $designDescription
-
+                    # Overrides the default for all future templates once palette object data is pushed.
+                    Add-SPOTheme -Identity "GTM Theme" -Palette $themepalette -IsInverted $false -Overwrite 
+            pause
+                    # Go Home.
+                    StartMenu
+                }
+            }
         }
+
         '2' {
             # Collect SPO Site ID For Deletion.
             Write-Host "Enter the site ID of the SharePoint template you wish to delete."
@@ -172,7 +193,6 @@ do {
 
             # Perform Delete Site Action.
             Remove-SPOSiteDesign $SiteID
-
             $siteScriptId.id
             pause
 
@@ -184,6 +204,7 @@ do {
         }
         '3' {
             # Show All Active SPO Sites.
+            Write-Host "-----------------------------------------------------------"
             Get-SPOSiteDesign
             pause
 
