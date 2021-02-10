@@ -1,6 +1,6 @@
-# SharePoint-Themer-Tools
+# SharePoint Online Templater (SHOT!)
 
 ![preview](/preview.png)
 
 ## Introduction
-SharePoint Themer Tools allows admins with tenant access to SharePoint Online to quickly build the basic foundation of their site designs hands-free.
+SHOT! allows you to backup and reuse existing site templates without manual programming or SPO API knowledge.

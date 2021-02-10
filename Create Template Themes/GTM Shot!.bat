@@ -1,2 +1,0 @@
-:: This script elevates the excuted program file to admin status in order to perform the highest level actions on your computer.
-PowerShell -NoProfile -ExecutionPolicy Unrestricted -Command "& {Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Unrestricted -File ""C:\Users\%username%\Documents\SharePoint-Themer-Tools\Create Template Themes\Source Scripts\GTM Shot.ps1""' -Verb RunAs}";
