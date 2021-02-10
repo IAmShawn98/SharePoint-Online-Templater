@@ -192,7 +192,7 @@ do {
             Start-Sleep -Seconds 8
             
             # Begin Download.
-            Start-Process "https://github.com/IAmShawn98/SharePoint-Themer-Tools/archive/main.zip"
+            Start-Process "https://github.com/IAmShawn98/SharePoint-Online-Templater/archive/main.zip"
             Clear-Host
             
             # Let User Know the Download Is Complete.
