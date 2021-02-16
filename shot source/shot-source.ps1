@@ -104,12 +104,13 @@ do {
 
     # Collect menu data from users.
     $MenuSelect = Read-Host " ";
+    Clear-Host
 
     # Switch Function; If the user selects option '1', let them choose to either create a template or set new theme default.
     switch ($MenuSelect) {
         '1' {
             # Data Collection For Picking Between Site Provisioning and Theme Defaulting.
-            Write-Host "[1] Create Site Backup"
+            Write-Host "[1] Create Site Backup | [2] Push A Template "
             $MenuSelect = Read-Host " ";
 
             # Switch Function; Allows user to pick between changing theme defaults or provisioning a brand new site.
@@ -117,6 +118,7 @@ do {
                 # Create Site Backup.
                 '1' {
                     # Collect Site For Use In Backuping Up Data.
+                    Clear-Host
                     Write-Host "Go to SharePoint and copy the URL of the site you wish to backup, then paste it here."
                     $SiteBackTarget = Read-Host " "
 
@@ -126,14 +128,11 @@ do {
                     Get-PnPProvisioningTemplate -Out backup.xml
                     # Let the user know their data has finished processing.
                     Write-Host "Your site data has finished processing and is now saved!"
-
-                    # Clear Section UI.
                     Clear-Host
 
                     # Ask the user if they'd like to apply their newly generated backup or not.
                     Write-Host "Would you like to apply your backup or finish? Type 'Yes' or 'No'."
                     $YesNo = Read-Host " ";
-
 
                     # Switch; (Yes; No) Handle Template Backup Action Choices.
                     Switch ($YesNo) {
@@ -152,7 +151,16 @@ do {
                             StartMenu
                         }
                     }
+                }
+                '2' {
+                    Write-Host "Find the site backup you created and Copy/Paste it here."
+                    $BackPath = Read-Host " ";
+                    Write-Host "Now, target any existing SharePoint site to apply your backup theme."
+                    $SiteOverride = Read-Host " ";
+                    Connect-PnPOnline -Url $SiteOverride -UseWebLogin
+                    Apply-PnPProvisioningTemplate $BackPath
 
+                    StartMenu
                 }
             }
         }
