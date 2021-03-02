@@ -9,7 +9,8 @@ $Year = Get-Date -UFormat %Y
 # Powershell Dependencies.
 $wsh = New-Object -ComObject Wscript.Shell
 
-# Prompt User to Paste Their SharePoint Admin Tenant Domains.
+# Admin Tenant Menu.
+function ConnectAdminTenant {
 Write-Host "
 
 
@@ -45,33 +46,37 @@ Write-Host "
                         #########################################################################
 "
 
+# Allow full access to site/script execution.
+Set-ExecutionPolicy Unrestricted
+Set-ExecutionPolicy Unrestricted -Force
+}
+
+# Renders 'Admin Tenant Menu'.
+ConnectAdminTenant
+
 # Connect to SharePoint Admin Tenant Domain.
 $SPDomain = Read-Host " ";
 Connect-SPOService -Url $SPDomain
 
-# Allow full access to site/script execution.
-Set-ExecutionPolicy Unrestricted
-Set-ExecutionPolicy Unrestricted -Force
-
-## Start MenuFD
+# Start Menu (Home Section).
 function StartMenu {
 Clear-Host
 Write-Host " 
                         Tenant Being Served: $SPDomain
 
-
+ 
                                             
                         ╔══════════════════════════════╗                                          
                             Welcome, $env:USERNAME!                                              
                         ╚══════════════════════════════╝
 
-                        [D] Download Latest Patch | [I] Install SharePoint Online
+                        [D] Download Latest Patch | [I] Install Required Modules
 
                         #############################################################################
                         #---------------------------------------------------------------------------#
                         # - - - - - - - - - - - - SHAREPOINT SITE ACTIONS - - - - - - - - - - - - - #
                         #---------------------------------------------------------------------------#
-                        #   [1] Create Template | [2] View Active Templates | [3] Delete Templates  #
+                        #                 [1] Template Options | [2] Switch Tenants                 #
                         #---------------------------------------------------------------------------#
                         #--         ______       ___   ___      ______       _________            --#
                         #--        /_____/\     /__/\ /__/\    /_____/\     /________/\           --#
@@ -99,7 +104,7 @@ Write-Host "                        #-------------------------------------------
                         #############################################################################"     
 }
 do {
-    # Renders Main Selection Menu.
+    # Renders 'Start Menu (Home Section)'.
     StartMenu
 
     # Collect menu data from users.
@@ -110,7 +115,7 @@ do {
     switch ($MenuSelect) {
         '1' {
             # Data Collection For Picking Between Site Provisioning and Theme Defaulting.
-            Write-Host "[1] Create Site Backup | [2] Push A Template "
+            Write-Host "[1] Create Site Backup | [2] Push Template | [b] Go Back"
             $MenuSelect = Read-Host " ";
 
             # Switch Function; Allows user to pick between changing theme defaults or provisioning a brand new site.
@@ -166,32 +171,16 @@ do {
         }
 
         '2' {
-            # Show All Active SPO Sites.
-            Write-Host "-----------------------------------------------------------"
-            Get-SPOSiteDesign
-            pause
+            # Disconnect User From Current Tenant.
+            Disconnect-SPOService
 
-            # Clear ID Table.
-            Clear-Host
-
-            # Go Home.
-            StartMenu
-        }
-        '3' {
-            # Collect SPO Site ID For Deletion.
-            Write-Host "Enter the site ID of the SharePoint template you wish to delete."
-            $SiteID = Read-Host " "
-
-            # Perform Delete Site Action.
-            Remove-SPOSiteDesign $SiteID
-            $siteScriptId.id
-            pause
-
-            # Clear Section UI.
-            Clear-Host
-
-            # Go Home.
-            StartMenu
+            # Renders 'Admin Tenant Menu'.
+            ConnectAdminTenant
+            
+            # Switch Admin Tenant Accounts.
+            # Connect to SharePoint Admin Tenant Domain.
+            $SPDomain = Read-Host " ";
+            Connect-SPOService -Url $SPDomain
         }
         # Download Latest Patch of 'SHOT!'.
         'd' {
@@ -213,7 +202,7 @@ do {
         # Install the Latest Version of SharePoint.
         'i' {
             # Install SharePoint Online Management Shell.
-            Install-Module -Name Microsoft.Online.SharePoint.PowerShell
+            Install-Module -Name Microsoft.Online.SharePoint.PowerShell -AllowClobber
             pause
             
             # Go Home.
