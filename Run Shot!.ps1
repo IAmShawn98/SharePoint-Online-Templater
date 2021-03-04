@@ -1,4 +1,5 @@
 ﻿# SharePoint Online Templater (SHOT!) By Shawn Luther
+Add-Type -AssemblyName System.Windows.Forms
 
 # PowerShell Window Title.
 $host.ui.RawUI.WindowTitle = "SharePoint Online Templater (SHOT!)"
@@ -115,7 +116,7 @@ do {
     switch ($MenuSelect) {
         '1' {
             # Data Collection For Picking Between Site Provisioning and Theme Defaulting.
-            Write-Host "[1] Create Site Backup | [2] Push Template | [b] Go Back"
+            Write-Host "[1] Create Site Backup | [2] Push Backup Template | [b] Go Back"
             $MenuSelect = Read-Host " ";
 
             # Switch Function; Allows user to pick between changing theme defaults or provisioning a brand new site.
@@ -132,7 +133,9 @@ do {
                     # Backup SharePoint Data in XML Format.
                     Get-PnPProvisioningTemplate -Out backup.xml
                     # Let the user know their data has finished processing.
-                    Write-Host "Your site data has finished processing and is now saved!"
+                    $msgBody = "Your SharePoint site has been saved as 'backup.xml'!"
+                    $msgTitle = "SharePoint Site Saved"
+                    [System.Windows.Forms.MessageBox]::Show($msgBody,$msgTitle)
                     Clear-Host
 
                     # Ask the user if they'd like to apply their newly generated backup or not.
@@ -203,6 +206,7 @@ do {
         'i' {
             # Install SharePoint Online Management Shell.
             Install-Module -Name Microsoft.Online.SharePoint.PowerShell -AllowClobber
+            Install-Module SharePointPnPPowerShellOnline -AllowClobber
             pause
             
             # Go Home.
